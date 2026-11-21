@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: spending_tracker
     steps:
       - uses: actions/checkout@v4
 
@@ -21,7 +24,7 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Tạo khung Android nếu repo chưa có thư mục android
+      - name: Tạo khung Android nếu chưa có thư mục android
         run: |
           if [ ! -d android ]; then
             flutter create --platforms=android --project-name spending_tracker --org com.example.spendingtracker .
@@ -35,5 +38,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: spending-tracker-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: spending_tracker/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error

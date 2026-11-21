@@ -29,7 +29,8 @@ class _SettingsPageState extends State<SettingsPage> {
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/$name');
     await file.writeAsString(content);
-    await Share.shareXFiles([XFile(file.path)], subject: name);
+        await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)], subject: name));
   }
 
   Future<void> _exportJson() async {
@@ -52,10 +53,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _import() async {
     try {
-      final res =
-          await FilePicker.platform.pickFiles(type: FileType.any, withData: true);
-      final bytes = res?.files.single.bytes;
-      if (bytes == null) return;
+            final picked = await FilePicker.pickFile();
+      if (picked == null) return;
+      final bytes = await picked.readAsBytes();
       final data = jsonDecode(utf8.decode(bytes));
       if (data is! Map<String, dynamic>) {
         throw const FormatException('File sao lưu không hợp lệ');
